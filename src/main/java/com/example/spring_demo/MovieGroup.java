@@ -10,14 +10,11 @@ public class MovieGroup {
         this.list = lsit;
     }
 
-    public List<Movie> getList(){
-        return list;
-    }
-
     public List<Movie> getListOrderRating(){
         return list.stream()
                 .filter(b -> !((Float)b.getUserRating()).equals(0.0f))
-                .sorted((a, b) -> b.getUserRating() > a.getUserRating() ? 1 : -1)
+                .filter(b -> !b.getDirector().equals(""))
+                .sorted((a, b) -> b.getUserRating() >= a.getUserRating() ? 1 : -1)
                 .collect(Collectors.toList());
     }
 }
