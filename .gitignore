@@ -6,7 +6,8 @@ build/
 !**/src/test/**/build/
 
 #Secret
-./src/main/resources/application-secret.properties
+.properties
+!**/src/main/resources/application.properties
 
 ### STS ###
 .apt_generated
