@@ -1,5 +1,8 @@
-package com.example.spring_demo;
+package com.example.spring_demo.client;
 
+import com.example.spring_demo.config.NaverProperties;
+import com.example.spring_demo.core.Encyc;
+import com.example.spring_demo.core.EncycRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,33 +13,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class MovieRepositoryImpl implements MovieRepository {
+public class EncycRepositoryImpl implements EncycRepository {
 
     private final RestTemplate restTemplate;
     private final NaverProperties naverProperties;
 
-    public MovieRepositoryImpl(RestTemplate restTemplate, NaverProperties naverProperties) {
+    public EncycRepositoryImpl(RestTemplate restTemplate, NaverProperties naverProperties) {
         this.restTemplate = restTemplate;
         this.naverProperties = naverProperties;
     }
 
     @Override
-    public List<Movie> findByQuery(String query) {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public List<Encyc> findByQuery(String query) {
+        org.springframework.http.HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("X-Naver-Client-Id", naverProperties.getClientId());
         httpHeaders.add("X-Naver-Client-Secret", naverProperties.getClientSecret());
 
-        String url = naverProperties.getUrl() + "movie.json?query=" + query;
-        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(httpHeaders), ResponseMovie.class)
+        String url = naverProperties.getUrl() + "encyc.json?query=" + query;
+        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(httpHeaders), ResponseEncyc.class)
                 .getBody()
                 .getItems()
                 .stream()
-                .map(m -> Movie.builder()
+                .map(m -> Encyc.builder()
                         .title(m.getTitle())
                         .link(m.getLink())
-                        .actor(m.getActor())
-                        .director(m.getDirector())
-                        .userRating(m.getUserRating())
+                        .description(m.getDescription())
                         .build())
                 .collect(Collectors.toList());
     }

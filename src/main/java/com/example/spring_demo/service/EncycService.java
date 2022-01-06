@@ -1,5 +1,7 @@
-package com.example.spring_demo;
+package com.example.spring_demo.service;
 
+import com.example.spring_demo.core.Encyc;
+import com.example.spring_demo.core.EncycRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

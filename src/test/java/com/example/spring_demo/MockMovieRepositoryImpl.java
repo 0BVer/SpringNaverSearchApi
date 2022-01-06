@@ -1,11 +1,14 @@
 package com.example.spring_demo;
 
+import com.example.spring_demo.core.Movie;
+import com.example.spring_demo.client.MovieRepositoryImpl;
+import com.example.spring_demo.config.NaverProperties;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class MockMovieRepositoryImpl extends MovieRepositoryImpl{
+public class MockMovieRepositoryImpl extends MovieRepositoryImpl {
     public MockMovieRepositoryImpl(RestTemplate restTemplate, NaverProperties naverProperties) {
         super(restTemplate, naverProperties);
     }

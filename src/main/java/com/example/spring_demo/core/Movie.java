@@ -1,4 +1,4 @@
-package com.example.spring_demo;
+package com.example.spring_demo.core;
 
 import lombok.Builder;
 import lombok.Getter;

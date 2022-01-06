@@ -1,4 +1,4 @@
-package com.example.spring_demo;
+package com.example.spring_demo.config;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
