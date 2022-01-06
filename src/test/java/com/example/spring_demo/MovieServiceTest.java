@@ -14,9 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -25,21 +23,21 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MovieServiceTest {
 
-    @DisplayName("평점 순으로 정렬되는지")
-    @Test
-    void shouldSortedInOrderOfGrade(){
-        //given
-        String query = "test_query";
-        String expectedTopRankingMovieTile = "movie3";
-        MovieRepository movieRepository = new MockMovieRepositoryImpl(null, null);
-        MovieService movieService = new MovieService(movieRepository);
-
-        //when
-        List<Movie> actualMovie = movieService.search(query);
-
-        //then
-        assertEquals(expectedTopRankingMovieTile, actualMovie.stream().findFirst().get().getTitle());
-    }
+//    @DisplayName("평점 순으로 정렬되는지")
+//    @Test
+//    void shouldSortedInOrderOfGrade(){
+//        //given
+//        String query = "test_query";
+//        String expectedTopRankingMovieTile = "movie3";
+//        MovieRepository movieRepository = new MockMovieRepositoryImpl(null, null);
+//        MovieService movieService = new MovieService(movieRepository);
+//
+//        //when
+//        List<Movie> actualMovie = movieService.search(query);
+//
+//        //then
+//        assertEquals(expectedTopRankingMovieTile, actualMovie.stream().findFirst().get().getTitle());
+//    }
 
     @Mock
     private MovieRepository movieRepository;
@@ -132,6 +130,34 @@ class MovieServiceTest {
         assertThrows(ClientNoContentRuntimeException.class, () -> {
             Movie movie = movieService.recommendTodayMovie(anyString());
         });
+    }
+
+    @DisplayName("캐시에 값이 잘 저장 되는지")
+    @Test
+    void shouldSaveResultToCache(){
+        //given
+        String query = "test_query";
+        List<Movie> getStubMovies = Arrays.asList(
+                Movie.builder().title("movie1").link("http://test").director("a").userRating(7.9f).build(),
+                Movie.builder().title("movie2").link("http://test").director("a").userRating(8.3f).build(),
+                Movie.builder().title("movie3").link("http://test").director("a").userRating(9.7f).build()
+        );
+        int expectedCacheSize = 1;
+        given(movieRepository.findByQuery(anyString())).willReturn(getStubMovies);
+        MovieService movieService = new MovieService(movieRepository);
+
+        //when
+        movieService.search(query);
+
+        //then
+        assertEquals(expectedCacheSize, movieService.lookup().size());
+    }
+
+    @DisplayName("값을 잘 갱신하는지")
+    @Test
+    void shouldRecallCacheWell(){
+        //given
+        //TODO:값 갱신 작동 하는지 테스트 코드 작성
     }
 }
 

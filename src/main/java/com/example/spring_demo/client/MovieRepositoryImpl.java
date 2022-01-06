@@ -7,7 +7,6 @@ import com.example.spring_demo.exception.ClientAuthRuntimeException;
 import com.example.spring_demo.exception.ClientBadRequestRuntimeException;
 import com.example.spring_demo.exception.ClientRuntimeException;
 import com.example.spring_demo.exception.ExceptionMessage;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,18 +23,18 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     private final RestTemplate restTemplate;
     private final NaverProperties naverProperties;
+    private HttpHeaders httpHeaders = new HttpHeaders();
 
     public MovieRepositoryImpl(RestTemplate restTemplate, NaverProperties naverProperties) {
         this.restTemplate = restTemplate;
         this.naverProperties = naverProperties;
+
+        this.httpHeaders.add("X-Naver-Client-Id", naverProperties.getClientId());
+        this.httpHeaders.add("X-Naver-Client-Secret", naverProperties.getClientSecret());
     }
 
     @Override
     public List<Movie> findByQuery(String query) {
-        ModelMapper modelMapper = new ModelMapper();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("X-Naver-Client-Id", naverProperties.getClientId());
-        httpHeaders.add("X-Naver-Client-Secret", naverProperties.getClientSecret());
 
         String url = naverProperties.getUrl() + "movie.json?query=" + query;
 
@@ -44,18 +43,24 @@ public class MovieRepositoryImpl implements MovieRepository {
                     .getBody()
                     .getItems()
                     .stream()
-                    .map(m -> modelMapper.map(m, Movie.class))
+                    .map(m -> Movie.builder()
+                            .title(m.getTitle())
+                            .link(m.getLink())
+                            .actor(m.getActor())
+                            .director(m.getDirector())
+                            .userRating(m.getUserRating())
+                            .build())
                     .collect(Collectors.toList());
 
         } catch (HttpClientErrorException ex) {
             if (HttpStatus.UNAUTHORIZED.equals(ex.getStatusCode())) {
                 throw new ClientAuthRuntimeException(ExceptionMessage.NAVER_API_UNAUTORIZED);
-            } else if (HttpStatus.BAD_REQUEST.equals(ex.getStatusCode())){
+            } else if (HttpStatus.BAD_REQUEST.equals(ex.getStatusCode())) {
                 throw new ClientBadRequestRuntimeException(ExceptionMessage.NAVER_API_BAD_REQUEST);
             } else {
                 throw new ClientRuntimeException(ex.getMessage());
             }
-        } catch (RuntimeException ex){
+        } catch (RuntimeException ex) {
             throw new ClientRuntimeException(ex.getMessage());
         }
     }
