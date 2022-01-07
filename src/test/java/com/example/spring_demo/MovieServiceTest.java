@@ -132,26 +132,26 @@ class MovieServiceTest {
         });
     }
 
-    @DisplayName("캐시에 값이 잘 저장 되는지")
-    @Test
-    void shouldSaveResultToCache(){
-        //given
-        String query = "test_query";
-        List<Movie> getStubMovies = Arrays.asList(
-                Movie.builder().title("movie1").link("http://test").director("a").userRating(7.9f).build(),
-                Movie.builder().title("movie2").link("http://test").director("a").userRating(8.3f).build(),
-                Movie.builder().title("movie3").link("http://test").director("a").userRating(9.7f).build()
-        );
-        int expectedCacheSize = 1;
-        given(movieRepository.findByQuery(anyString())).willReturn(getStubMovies);
-        MovieService movieService = new MovieService(movieRepository);
-
-        //when
-        movieService.search(query);
-
-        //then
-        assertEquals(expectedCacheSize, movieService.lookup().size());
-    }
+//    @DisplayName("캐시에 값이 잘 저장 되는지")
+//    @Test
+//    void shouldSaveResultToCache(){
+//        //given
+//        String query = "test_query";
+//        List<Movie> getStubMovies = Arrays.asList(
+//                Movie.builder().title("movie1").link("http://test").director("a").userRating(7.9f).build(),
+//                Movie.builder().title("movie2").link("http://test").director("a").userRating(8.3f).build(),
+//                Movie.builder().title("movie3").link("http://test").director("a").userRating(9.7f).build()
+//        );
+//        int expectedCacheSize = 1;
+//        given(movieRepository.findByQuery(anyString())).willReturn(getStubMovies);
+//        MovieService movieService = new MovieService(movieRepository);
+//
+//        //when
+//        movieService.search(query);
+//
+//        //then
+//        assertEquals(expectedCacheSize, movieService.lookup().size());
+//    }
 
     @DisplayName("값을 잘 갱신하는지")
     @Test
