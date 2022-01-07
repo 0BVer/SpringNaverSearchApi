@@ -1,12 +1,13 @@
 package com.example.spring_demo.core;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Builder
-@Getter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Movie implements Serializable {
     private String title;
     private String link;

@@ -4,13 +4,11 @@ import com.example.spring_demo.core.Movie;
 import com.example.spring_demo.core.MovieGroup;
 import com.example.spring_demo.core.MovieRepository;
 import com.example.spring_demo.exception.ClientNoContentRuntimeException;
-import com.example.spring_demo.provider.cache.LookAsideCaching;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
-
 
 
 @Service
@@ -19,15 +17,15 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
 
-//    @PerformanceTimeRecord
-    @LookAsideCaching(value = "cache::search-movies", key = "query")
+    //    @PerformanceTimeRecord
+    @Cacheable(value = "cache::movie::query", key = "#query")
     public List<Movie> search(final String query) {
         MovieGroup movieGroup = new MovieGroup(movieRepository.findByQuery(query));
         return movieGroup.getListOrderRating();
     }
 
-//    @PerformanceTimeRecord
-    @LookAsideCaching(value = "cache::recommend-movies", key = "query")
+    //    @PerformanceTimeRecord
+    @Cacheable(value = "cache::recommend::query", key = "#query")
     public Movie recommendTodayMovie(final String query) {
         MovieGroup movieGroup = new MovieGroup(movieRepository.findByQuery(query));
         return movieGroup.getHighestRatingMovie() //검색 결과가 없을때는 기본 영화 제공

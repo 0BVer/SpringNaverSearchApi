@@ -6,6 +6,8 @@ import com.example.spring_demo.provider.cache.CachingAspectProvider;
 import com.example.spring_demo.service.EncycService;
 import com.example.spring_demo.core.Movie;
 import com.example.spring_demo.service.MovieService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +35,12 @@ public class SearchController {
     public Movie getMovieByQuery(@RequestParam(name = "q") String query) {
         return movieService.recommendTodayMovie(query);
     }
+
+//    @CacheEvict(value = "cache::movie::query", key = "#query")
+//    @DeleteMapping("/movies/cache")
+//    public Boolean clearMovieQueryCache(@RequestParam(name = "q") String q){
+//        return true;
+//    }
 
     @GetMapping("movies/actors")
     public List<Movie> getActorsByQuery(@RequestParam(name = "q") String query){
